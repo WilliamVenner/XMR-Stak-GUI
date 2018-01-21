@@ -11,7 +11,7 @@ namespace XMR_Stak_GUI
 {
     public partial class MainForm : Form
     {
-        public double version = 2.1;
+        public double version = 2.2;
 
         private string select_config = "Please select a miner config.\r\nTo capture the output of xmr-stak, you must set \"flush_stdout\" to true in your config file.";
 
