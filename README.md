@@ -1,5 +1,5 @@
 # XMR-Stak-GUI
-This is a simple GUI for "hotswapping" miner configurations in XMR-Stak.
+This is a simple GUI for "hotswapping" miner configurations in XMR-Stak running on Windows.
 
 I made this because I wanted to be able to easily swap between two mining configurations... one for my GTX 970 and one for my GTX 1080 + GTX 970.
 
