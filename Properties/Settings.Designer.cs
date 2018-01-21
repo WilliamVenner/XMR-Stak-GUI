@@ -50,30 +50,6 @@ namespace XMR_Stak_GUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Monero")]
-        public string Currency {
-            get {
-                return ((string)(this["Currency"]));
-            }
-            set {
-                this["Currency"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("NVIDIA")]
-        public string MinerBackend {
-            get {
-                return ((string)(this["MinerBackend"]));
-            }
-            set {
-                this["MinerBackend"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ConfigFileLocation {
             get {

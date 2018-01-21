@@ -40,13 +40,6 @@ namespace XMR_Stak_GUI
             this.GPUConfigsDropdown = new System.Windows.Forms.ToolStripDropDownButton();
             this.SetXMRStakLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.ConfigFileLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.MinerSelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.CPUSelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.AMDSelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.NVIDIASelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.CurrencySelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.MoneroSelector = new System.Windows.Forms.ToolStripMenuItem();
-            this.AeonSelector = new System.Windows.Forms.ToolStripMenuItem();
             this.AddConfigButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NoConfigsIndicator = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -110,7 +103,7 @@ namespace XMR_Stak_GUI
             this.toolStripDropDownButton1});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(142, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(173, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButton1
@@ -145,8 +138,6 @@ namespace XMR_Stak_GUI
             this.GPUConfigsDropdown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetXMRStakLocation,
             this.ConfigFileLocation,
-            this.MinerSelector,
-            this.CurrencySelector,
             this.AddConfigButton,
             this.NoConfigsIndicator});
             this.GPUConfigsDropdown.Image = ((System.Drawing.Image)(resources.GetObject("GPUConfigsDropdown.Image")));
@@ -168,60 +159,6 @@ namespace XMR_Stak_GUI
             this.ConfigFileLocation.Size = new System.Drawing.Size(208, 22);
             this.ConfigFileLocation.Text = "Set Config File Location...";
             this.ConfigFileLocation.Click += new System.EventHandler(this.ConfigFileLocation_Click);
-            // 
-            // MinerSelector
-            // 
-            this.MinerSelector.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CPUSelector,
-            this.AMDSelector,
-            this.NVIDIASelector});
-            this.MinerSelector.Name = "MinerSelector";
-            this.MinerSelector.Size = new System.Drawing.Size(208, 22);
-            this.MinerSelector.Text = "Miner Config Type";
-            // 
-            // CPUSelector
-            // 
-            this.CPUSelector.Name = "CPUSelector";
-            this.CPUSelector.Size = new System.Drawing.Size(112, 22);
-            this.CPUSelector.Text = "CPU";
-            this.CPUSelector.Click += new System.EventHandler(this.CPUSelector_Click);
-            // 
-            // AMDSelector
-            // 
-            this.AMDSelector.Name = "AMDSelector";
-            this.AMDSelector.Size = new System.Drawing.Size(112, 22);
-            this.AMDSelector.Text = "AMD";
-            this.AMDSelector.Click += new System.EventHandler(this.AMDSelector_Click);
-            // 
-            // NVIDIASelector
-            // 
-            this.NVIDIASelector.Name = "NVIDIASelector";
-            this.NVIDIASelector.Size = new System.Drawing.Size(112, 22);
-            this.NVIDIASelector.Text = "NVIDIA";
-            this.NVIDIASelector.Click += new System.EventHandler(this.NVIDIASelector_Click);
-            // 
-            // CurrencySelector
-            // 
-            this.CurrencySelector.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MoneroSelector,
-            this.AeonSelector});
-            this.CurrencySelector.Name = "CurrencySelector";
-            this.CurrencySelector.Size = new System.Drawing.Size(208, 22);
-            this.CurrencySelector.Text = "Currency";
-            // 
-            // MoneroSelector
-            // 
-            this.MoneroSelector.Name = "MoneroSelector";
-            this.MoneroSelector.Size = new System.Drawing.Size(116, 22);
-            this.MoneroSelector.Text = "Monero";
-            this.MoneroSelector.Click += new System.EventHandler(this.MoneroSelector_Click);
-            // 
-            // AeonSelector
-            // 
-            this.AeonSelector.Name = "AeonSelector";
-            this.AeonSelector.Size = new System.Drawing.Size(116, 22);
-            this.AeonSelector.Text = "Aeon";
-            this.AeonSelector.Click += new System.EventHandler(this.AeonSelector_Click);
             // 
             // AddConfigButton
             // 
@@ -335,13 +272,6 @@ namespace XMR_Stak_GUI
         private System.Windows.Forms.ToolStripMenuItem SetXMRStakLocation;
         private System.Windows.Forms.ToolStripMenuItem AddConfigButton;
         private System.Windows.Forms.ToolStripMenuItem NoConfigsIndicator;
-        private System.Windows.Forms.ToolStripMenuItem CurrencySelector;
-        private System.Windows.Forms.ToolStripMenuItem MoneroSelector;
-        private System.Windows.Forms.ToolStripMenuItem AeonSelector;
-        private System.Windows.Forms.ToolStripMenuItem MinerSelector;
-        private System.Windows.Forms.ToolStripMenuItem CPUSelector;
-        private System.Windows.Forms.ToolStripMenuItem AMDSelector;
-        private System.Windows.Forms.ToolStripMenuItem NVIDIASelector;
         private System.Windows.Forms.ToolStripMenuItem StopXMRStak;
         private System.Windows.Forms.ToolStripMenuItem ConfigFileLocation;
         private System.Windows.Forms.OpenFileDialog OpenConfigFile;

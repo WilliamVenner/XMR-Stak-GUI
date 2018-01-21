@@ -10,7 +10,7 @@ namespace XMR_Stak_GUI
 {
     public partial class MainForm : Form
     {
-        public string version = "v1";
+        public string version = "v2";
 
         private string select_config = "Please select a miner config.\r\nTo capture the output of xmr-stak, you must set \"flush_stdout\" to true in your config file.";
 
@@ -34,7 +34,7 @@ namespace XMR_Stak_GUI
                     if (latest_version != version)
                     {
                         this.Text = "XMR-Stak GUI " + version + " (outdated!)";
-                        DialogResult open_github = MessageBox.Show(this, "You are running an outdated version of XMR-Stak GUI!\nWould you like to open the GitHub releases page?", "Outdated", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        DialogResult open_github = MessageBox.Show(this, "You are running an outdated version of XMR-Stak GUI!\n\nWould you like to open the GitHub releases page?", "Outdated", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (open_github == DialogResult.Yes)
                         {
                             Process.Start("https://github.com/WilliamVenner/XMR-Stak-GUI/releases");
@@ -103,7 +103,7 @@ namespace XMR_Stak_GUI
         
         public void UpdateXMRStakProcess()
         {
-            if (Properties.Settings.Default.XMRStakLocation.Length > 0 && Properties.Settings.Default.ConfigFileLocation.Length > 0 && SelectedGPUConfig != null)
+            if (Properties.Settings.Default.XMRStakLocation.Length > 0 && Properties.Settings.Default.ConfigFileLocation.Length > 0 && SelectedMiningConfig != null)
             {
                 if (XMRStakProcess != null)
                 {
@@ -116,17 +116,17 @@ namespace XMR_Stak_GUI
                 OutputBox.Text = "Starting XMR-Stak...";
 
                 string arguments = "--config \"" + Properties.Settings.Default.ConfigFileLocation + "\" --noUAC ";
-                if (Properties.Settings.Default.MinerBackend == "CPU")
+                if (SelectedMiningConfigType == "CPU")
                 {
-                    arguments += "--noAMD --noNVIDIA --cpu \"" + SelectedGPUConfig + "\"";
+                    arguments += "--noAMD --noNVIDIA --cpu \"" + SelectedMiningConfig + "\"";
                 }
-                else if (Properties.Settings.Default.MinerBackend == "AMD")
+                else if (SelectedMiningConfigType == "AMD")
                 {
-                    arguments += "--noNVIDIA --noCPU --amd \"" + SelectedGPUConfig + "\"";
+                    arguments += "--noNVIDIA --noCPU --amd \"" + SelectedMiningConfig + "\"";
                 }
-                else if (Properties.Settings.Default.MinerBackend == "NVIDIA")
+                else if (SelectedMiningConfigType == "NVIDIA")
                 {
-                    arguments += "--noAMD --noCPU --nvidia \"" + SelectedGPUConfig + "\"";
+                    arguments += "--noAMD --noCPU --nvidia \"" + SelectedMiningConfig + "\"";
                 }
 
                 ProcessStartInfo startInfo = new ProcessStartInfo(Properties.Settings.Default.XMRStakLocation);
@@ -169,40 +169,67 @@ namespace XMR_Stak_GUI
             }
         }
 
-        public string SelectedGPUConfig;
+        public string SelectedMiningConfig;
+        public string SelectedMiningConfigType;
         private List<ToolStripMenuItem> config_selectors = new List<ToolStripMenuItem>();
         public void UpdateConfigDropdown()
         {
             config_selectors.Clear();
 
             GPUConfigsDropdown.DropDownItems.Clear();
-            GPUConfigsDropdown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            GPUConfigsDropdown.DropDownItems.AddRange(new ToolStripItem[] {
                 SetXMRStakLocation,
                 ConfigFileLocation,
-                CurrencySelector,
-                MinerSelector,
                 new ToolStripSeparator(),
                 AddConfigButton,
                 NoConfigsIndicator
             });
             ConfigFileLocation.Checked = Properties.Settings.Default.ConfigFileLocation.Length > 0;
             SetXMRStakLocation.Checked = Properties.Settings.Default.XMRStakLocation.Length > 0;
-            MoneroSelector.Checked     = Properties.Settings.Default.Currency == "Monero";
-            AeonSelector.Checked       = Properties.Settings.Default.Currency == "Aeon";
-            CPUSelector.Checked        = Properties.Settings.Default.MinerBackend == "CPU";
-            AMDSelector.Checked        = Properties.Settings.Default.MinerBackend == "AMD";
-            NVIDIASelector.Checked     = Properties.Settings.Default.MinerBackend == "NVIDIA";
 
             NoConfigsIndicator.Visible = Properties.Settings.Default.Configs.Count == 0;
-            foreach (string ConfigLocation in Properties.Settings.Default.Configs)
+            foreach (string ConfigLocationUnparsed_foreach in Properties.Settings.Default.Configs)
             {
+                string ConfigLocationUnparsed = ConfigLocationUnparsed_foreach;
+                string[] ConfigLocationParsed = ConfigLocationUnparsed.Split(';');
+                string ConfigLocation = ConfigLocationParsed[0];
+                string ConfigType = ConfigLocationParsed[1];
+
                 ToolStripMenuItem ConfigItem = new ToolStripMenuItem();
                 config_selectors.Add(ConfigItem);
                 ConfigItem.Size = new System.Drawing.Size(203, 22);
                 ConfigItem.Name = ConfigLocation;
                 ConfigItem.Text = Path.GetFileNameWithoutExtension(ConfigLocation);
-                ConfigItem.Checked = SelectedGPUConfig == ConfigLocation;
+                ConfigItem.Checked = SelectedMiningConfig == ConfigLocation;
                 GPUConfigsDropdown.DropDownItems.Add(ConfigItem);
+
+                ToolStripMenuItem CPUType = new ToolStripMenuItem();
+                CPUType.Size = new System.Drawing.Size(203, 22);
+                CPUType.Name = ConfigLocation + "_cpu";
+                CPUType.Text = "CPU";
+                if (ConfigType == "CPU") CPUType.Checked = true;
+
+                ToolStripMenuItem AMDType = new ToolStripMenuItem();
+                AMDType.Size = new System.Drawing.Size(203, 22);
+                AMDType.Name = ConfigLocation + "_amd";
+                AMDType.Text = "AMD";
+                if (ConfigType == "AMD") AMDType.Checked = true;
+
+                ToolStripMenuItem NVIDIAType = new ToolStripMenuItem();
+                NVIDIAType.Size = new System.Drawing.Size(203, 22);
+                NVIDIAType.Name = ConfigLocation + "_nvidia";
+                NVIDIAType.Text = "NVIDIA";
+                if (ConfigType == "NVIDIA") NVIDIAType.Checked = true;
+
+                ToolStripMenuItem Type = new ToolStripMenuItem();
+                Type.Size = new System.Drawing.Size(203, 22);
+                Type.Name = ConfigLocation + "_type";
+                Type.Text = "Type";
+                Type.DropDownItems.AddRange(new ToolStripItem[] {
+                    CPUType,
+                    AMDType,
+                    NVIDIAType
+                });
 
                 ToolStripMenuItem Remove = new ToolStripMenuItem();
                 Remove.Size = new System.Drawing.Size(203, 22);
@@ -210,13 +237,14 @@ namespace XMR_Stak_GUI
                 Remove.Text = "Remove";
                 Remove.Click += (s, e) =>
                 {
-                    if (SelectedGPUConfig == ConfigLocation)
+                    if (SelectedMiningConfig == ConfigLocation)
                     {
-                        SelectedGPUConfig = null;
+                        SelectedMiningConfig = null;
                     }
-                    Properties.Settings.Default.Configs.Remove(ConfigLocation);
+                    Properties.Settings.Default.Configs.Remove(ConfigLocationUnparsed);
                     Properties.Settings.Default.Save();
                     GPUConfigsDropdown.DropDownItems.Remove(ConfigItem);
+                    Console.WriteLine(Properties.Settings.Default.Configs.Count);
                     NoConfigsIndicator.Visible = Properties.Settings.Default.Configs.Count == 0;
                 };
 
@@ -226,7 +254,8 @@ namespace XMR_Stak_GUI
                 Select.Text = "Use";
                 Select.Click += (s, e) =>
                 {
-                    SelectedGPUConfig = ConfigLocation;
+                    SelectedMiningConfig = ConfigLocation;
+                    SelectedMiningConfigType = ConfigType;
                     foreach (ToolStripMenuItem ConfigItem_Uncheck in config_selectors)
                     {
                         ConfigItem_Uncheck.Checked = false;
@@ -234,10 +263,58 @@ namespace XMR_Stak_GUI
                     ConfigItem.Checked = true;
                     UpdateXMRStakProcess();
                 };
+                if (CPUType.Checked == false && AMDType.Checked == false && NVIDIAType.Checked == false)
+                {
+                    Select.Enabled = false;
+                }
 
-                ConfigItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                CPUType.Click += (s, e) =>
+                {
+                    Properties.Settings.Default.Configs.Remove(ConfigLocationUnparsed);
+                    Properties.Settings.Default.Configs.Add(ConfigLocation + ";" + "CPU");
+                    Properties.Settings.Default.Save();
+
+                    ConfigLocationUnparsed = ConfigLocation + ";" + "CPU";
+                    ConfigType = "CPU";
+                    
+                    Select.Enabled = true;
+                    CPUType.Checked = true;
+                    AMDType.Checked = false;
+                    NVIDIAType.Checked = false;
+                };
+                AMDType.Click += (s, e) =>
+                {
+                    Properties.Settings.Default.Configs.Remove(ConfigLocationUnparsed);
+                    Properties.Settings.Default.Configs.Add(ConfigLocation + ";" + "AMD");
+                    Properties.Settings.Default.Save();
+
+                    ConfigLocationUnparsed = ConfigLocation + ";" + "AMD";
+                    ConfigType = "AMD";
+
+                    Select.Enabled = true;
+                    CPUType.Checked = false;
+                    AMDType.Checked = true;
+                    NVIDIAType.Checked = false;
+                };
+                NVIDIAType.Click += (s, e) =>
+                {
+                    Properties.Settings.Default.Configs.Remove(ConfigLocationUnparsed);
+                    Properties.Settings.Default.Configs.Add(ConfigLocation + ";" + "NVIDIA");
+                    Properties.Settings.Default.Save();
+
+                    ConfigLocationUnparsed = ConfigLocation + ";" + "NVIDIA";
+                    ConfigType = "NVIDIA";
+
+                    Select.Enabled = true;
+                    CPUType.Checked = false;
+                    AMDType.Checked = false;
+                    NVIDIAType.Checked = true;
+                };
+
+                ConfigItem.DropDownItems.AddRange(new ToolStripItem[] {
                     Select,
-                    Remove
+                    Remove,
+                    Type
                 });
             }
         }
@@ -264,42 +341,13 @@ namespace XMR_Stak_GUI
         }
         private void AddConfigFile_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Properties.Settings.Default.Configs.AddRange(AddMinerConfigFile.FileNames);
+            foreach(string FileName in AddMinerConfigFile.FileNames)
+            {
+                Properties.Settings.Default.Configs.Add(FileName + ";" + "UNKNOWN");
+            }
             Properties.Settings.Default.Save();
             UpdateConfigDropdown();
-            MessageBox.Show(this, "Added miner configuration(s).", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void CPUSelector_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.MinerBackend = "CPU";
-            Properties.Settings.Default.Save();
-            UpdateConfigDropdown();
-        }
-        private void AMDSelector_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.MinerBackend = "AMD";
-            Properties.Settings.Default.Save();
-            UpdateConfigDropdown();
-        }
-        private void NVIDIASelector_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.MinerBackend = "NVIDIA";
-            Properties.Settings.Default.Save();
-            UpdateConfigDropdown();
-        }
-
-        private void MoneroSelector_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.Currency = "Monero";
-            Properties.Settings.Default.Save();
-            UpdateConfigDropdown();
-        }
-        private void AeonSelector_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.Currency = "Aeon";
-            Properties.Settings.Default.Save();
-            UpdateConfigDropdown();
+            MessageBox.Show(this, "Added miner configuration(s).\n\nRemember: you'll need to set the type of this mining configuration (CPU/AMD/NVIDIA) before you can use it.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void StopXMRStak_Click(object sender, EventArgs e)
