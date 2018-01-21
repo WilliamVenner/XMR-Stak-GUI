@@ -1,5 +1,7 @@
 ![Screenshot of XMR Stak GUI](https://raw.githubusercontent.com/WilliamVenner/XMR-Stak-GUI/master/xmr-stak-gui.png)
 
+![Another screenshot of XMR Stak GUI](https://raw.githubusercontent.com/WilliamVenner/XMR-Stak-GUI/master/screenshot2.png)
+
 # XMR-Stak-GUI
 This is a simple GUI for "hotswapping" miner configurations in XMR-Stak running on Windows.
 
