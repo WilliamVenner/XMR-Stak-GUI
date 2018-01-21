@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Security.Principal;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace XMR_Stak_GUI
 {
     public partial class MainForm : Form
     {
-        public string version = "v2";
+        public double version = 2.1;
 
         private string select_config = "Please select a miner config.\r\nTo capture the output of xmr-stak, you must set \"flush_stdout\" to true in your config file.";
 
@@ -25,15 +26,16 @@ namespace XMR_Stak_GUI
         {
             CheckForUpdates_Item.Enabled = false;
             HttpWebRequest version_request = (HttpWebRequest)WebRequest.Create("https://cdn.rawgit.com/WilliamVenner/XMR-Stak-GUI/master/VERSION");
+            version_request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.BypassCache);
             try
             {
                 WebResponse response = version_request.GetResponse();
                 using (StreamReader stream = new StreamReader(response.GetResponseStream()))
                 {
-                    string latest_version = stream.ReadToEnd().Trim();
-                    if (latest_version != version)
+                    double latest_version = Convert.ToDouble(stream.ReadToEnd().Trim());
+                    if (latest_version > version)
                     {
-                        this.Text = "XMR-Stak GUI " + version + " (outdated!)";
+                        this.Text = "XMR-Stak GUI v" + version + " (outdated!)";
                         DialogResult open_github = MessageBox.Show(this, "You are running an outdated version of XMR-Stak GUI!\n\nWould you like to open the GitHub releases page?", "Outdated", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (open_github == DialogResult.Yes)
                         {
@@ -69,7 +71,7 @@ namespace XMR_Stak_GUI
                 UpdateConfigDropdown();
 
                 OutputBox.Text = select_config;
-                this.Text = "XMR-Stak GUI " + version;
+                this.Text = "XMR-Stak GUI v" + version;
 
                 Process[] xmr_staks = Process.GetProcessesByName("xmr-stak");
                 if (xmr_staks.Length > 0)
@@ -332,6 +334,7 @@ namespace XMR_Stak_GUI
         {
             Properties.Settings.Default.XMRStakLocation = XMRStakLocation.FileName;
             Properties.Settings.Default.Save();
+            UpdateConfigDropdown();
             MessageBox.Show(this, "Saved XMR-Stak location.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
