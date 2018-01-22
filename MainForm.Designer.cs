@@ -39,7 +39,7 @@ namespace XMR_Stak_GUI
             this.StopXMRStak = new System.Windows.Forms.ToolStripMenuItem();
             this.GPUConfigsDropdown = new System.Windows.Forms.ToolStripDropDownButton();
             this.SetXMRStakLocation = new System.Windows.Forms.ToolStripMenuItem();
-            this.ConfigFileLocation = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddXMRStakConfigFile = new System.Windows.Forms.ToolStripMenuItem();
             this.AddConfigButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NoConfigsIndicator = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -50,6 +50,7 @@ namespace XMR_Stak_GUI
             this.XMRStakLocation = new System.Windows.Forms.OpenFileDialog();
             this.AddMinerConfigFile = new System.Windows.Forms.OpenFileDialog();
             this.OpenConfigFile = new System.Windows.Forms.OpenFileDialog();
+            this.NoXMRStakConfigs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -103,7 +104,7 @@ namespace XMR_Stak_GUI
             this.toolStripDropDownButton1});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(173, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(142, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButton1
@@ -137,7 +138,8 @@ namespace XMR_Stak_GUI
             this.GPUConfigsDropdown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.GPUConfigsDropdown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetXMRStakLocation,
-            this.ConfigFileLocation,
+            this.AddXMRStakConfigFile,
+            this.NoXMRStakConfigs,
             this.AddConfigButton,
             this.NoConfigsIndicator});
             this.GPUConfigsDropdown.Image = ((System.Drawing.Image)(resources.GetObject("GPUConfigsDropdown.Image")));
@@ -149,21 +151,21 @@ namespace XMR_Stak_GUI
             // SetXMRStakLocation
             // 
             this.SetXMRStakLocation.Name = "SetXMRStakLocation";
-            this.SetXMRStakLocation.Size = new System.Drawing.Size(208, 22);
+            this.SetXMRStakLocation.Size = new System.Drawing.Size(203, 22);
             this.SetXMRStakLocation.Text = "Set XMR-Stak Location...";
             this.SetXMRStakLocation.Click += new System.EventHandler(this.XMRStakLocation_Click);
             // 
-            // ConfigFileLocation
+            // AddXMRStakConfigFile
             // 
-            this.ConfigFileLocation.Name = "ConfigFileLocation";
-            this.ConfigFileLocation.Size = new System.Drawing.Size(208, 22);
-            this.ConfigFileLocation.Text = "Set Config File Location...";
-            this.ConfigFileLocation.Click += new System.EventHandler(this.ConfigFileLocation_Click);
+            this.AddXMRStakConfigFile.Name = "AddXMRStakConfigFile";
+            this.AddXMRStakConfigFile.Size = new System.Drawing.Size(203, 22);
+            this.AddXMRStakConfigFile.Text = "Add XMR-Stak Config(s)";
+            this.AddXMRStakConfigFile.Click += new System.EventHandler(this.ConfigFileLocation_Click);
             // 
             // AddConfigButton
             // 
             this.AddConfigButton.Name = "AddConfigButton";
-            this.AddConfigButton.Size = new System.Drawing.Size(208, 22);
+            this.AddConfigButton.Size = new System.Drawing.Size(203, 22);
             this.AddConfigButton.Text = "Add Miner Config(s)...";
             this.AddConfigButton.Click += new System.EventHandler(this.AddConfigButton_Click);
             // 
@@ -171,7 +173,7 @@ namespace XMR_Stak_GUI
             // 
             this.NoConfigsIndicator.Enabled = false;
             this.NoConfigsIndicator.Name = "NoConfigsIndicator";
-            this.NoConfigsIndicator.Size = new System.Drawing.Size(208, 22);
+            this.NoConfigsIndicator.Size = new System.Drawing.Size(203, 22);
             this.NoConfigsIndicator.Text = "< no configs >";
             this.NoConfigsIndicator.Visible = false;
             // 
@@ -235,8 +237,17 @@ namespace XMR_Stak_GUI
             // OpenConfigFile
             // 
             this.OpenConfigFile.FileName = "OpenConfigFile";
-            this.OpenConfigFile.Filter = "config.txt|config.txt";
+            this.OpenConfigFile.Filter = "config.txt|*.txt";
+            this.OpenConfigFile.Multiselect = true;
             this.OpenConfigFile.FileOk += new System.ComponentModel.CancelEventHandler(this.OpenConfigFile_FileOk);
+            // 
+            // NoXMRStakConfigs
+            // 
+            this.NoXMRStakConfigs.Enabled = false;
+            this.NoXMRStakConfigs.Name = "NoXMRStakConfigs";
+            this.NoXMRStakConfigs.Size = new System.Drawing.Size(203, 22);
+            this.NoXMRStakConfigs.Text = "< no configs >";
+            this.NoXMRStakConfigs.Visible = false;
             // 
             // MainForm
             // 
@@ -273,7 +284,7 @@ namespace XMR_Stak_GUI
         private System.Windows.Forms.ToolStripMenuItem AddConfigButton;
         private System.Windows.Forms.ToolStripMenuItem NoConfigsIndicator;
         private System.Windows.Forms.ToolStripMenuItem StopXMRStak;
-        private System.Windows.Forms.ToolStripMenuItem ConfigFileLocation;
+        private System.Windows.Forms.ToolStripMenuItem AddXMRStakConfigFile;
         private System.Windows.Forms.OpenFileDialog OpenConfigFile;
         private System.Windows.Forms.TextBox OutputBox;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
@@ -281,6 +292,7 @@ namespace XMR_Stak_GUI
         private System.Windows.Forms.ToolStripMenuItem Wiki;
         private System.Windows.Forms.ToolStripMenuItem madeByBillyVennerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem GitHub;
+        private System.Windows.Forms.ToolStripMenuItem NoXMRStakConfigs;
     }
 }
 

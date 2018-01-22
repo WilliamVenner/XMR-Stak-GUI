@@ -11,10 +11,13 @@ namespace XMR_Stak_GUI
 {
     public partial class MainForm : Form
     {
-        public double version = 2.2;
+        public double version = 2.3;
 
         private string select_config = "Please select a miner config.\r\nTo capture the output of xmr-stak, you must set \"flush_stdout\" to true in your config file.";
 
+        public string SelectedConfig;
+        public string SelectedMiningConfig;
+        public string SelectedMiningConfigType;
         Process XMRStakProcess;
 
         public static bool IsAdministrator()
@@ -63,8 +66,8 @@ namespace XMR_Stak_GUI
         {
             if (!IsAdministrator())
             {
-                MessageBox.Show(this, "You must be running this as an administrator!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.BeginInvoke(new MethodInvoker(this.Close));
+                MessageBox.Show(this, "You must be running this as an administrator!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else
             {
                 InitializeComponent();
@@ -103,9 +106,9 @@ namespace XMR_Stak_GUI
             }
         }
         
-        public void UpdateXMRStakProcess()
+        public void UpdateXMRStakProcess(bool verbose = true)
         {
-            if (Properties.Settings.Default.XMRStakLocation.Length > 0 && Properties.Settings.Default.ConfigFileLocation.Length > 0 && SelectedMiningConfig != null)
+            if (Properties.Settings.Default.XMRStakLocation.Length > 0 && SelectedConfig != null && SelectedMiningConfig != null)
             {
                 if (XMRStakProcess != null)
                 {
@@ -117,7 +120,7 @@ namespace XMR_Stak_GUI
 
                 OutputBox.Text = "Starting XMR-Stak...";
 
-                string arguments = "--config \"" + Properties.Settings.Default.ConfigFileLocation + "\" --noUAC ";
+                string arguments = "--config \"" + SelectedConfig + "\" --noUAC ";
                 if (SelectedMiningConfigType == "CPU")
                 {
                     arguments += "--noAMD --noNVIDIA --cpu \"" + SelectedMiningConfig + "\"";
@@ -165,31 +168,84 @@ namespace XMR_Stak_GUI
 
                 StopXMRStak.Enabled = true;
             }
-            else
+            else if (verbose == true)
             {
                 MessageBox.Show(this, "We tried to run XMR-Stak, but you've either not set your xmr-stak.exe location, config file location or not selected a miner config.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
-        public string SelectedMiningConfig;
-        public string SelectedMiningConfigType;
         private List<ToolStripMenuItem> config_selectors = new List<ToolStripMenuItem>();
+        private List<ToolStripMenuItem> xmrstak_config_selectors = new List<ToolStripMenuItem>();
         public void UpdateConfigDropdown()
         {
             config_selectors.Clear();
-
+            xmrstak_config_selectors.Clear();
             GPUConfigsDropdown.DropDownItems.Clear();
-            GPUConfigsDropdown.DropDownItems.AddRange(new ToolStripItem[] {
+
+            List<ToolStripItem> DropDownItems = new List<ToolStripItem>();
+            DropDownItems.AddRange(new ToolStripItem[] {
                 SetXMRStakLocation,
-                ConfigFileLocation,
+                new ToolStripSeparator(),
+                AddXMRStakConfigFile,
+                NoXMRStakConfigs,
                 new ToolStripSeparator(),
                 AddConfigButton,
                 NoConfigsIndicator
             });
-            ConfigFileLocation.Checked = Properties.Settings.Default.ConfigFileLocation.Length > 0;
+            int i = 0;
+            foreach (string XMRStakConfig in Properties.Settings.Default.XMRStakConfigs)
+            {
+                ToolStripMenuItem XMRStakConfigItem = new ToolStripMenuItem();
+                xmrstak_config_selectors.Add(XMRStakConfigItem);
+                XMRStakConfigItem.Size = new System.Drawing.Size(203, 22);
+                XMRStakConfigItem.Name = XMRStakConfig;
+                XMRStakConfigItem.Text = Path.GetFileNameWithoutExtension(XMRStakConfig);
+                XMRStakConfigItem.Checked = SelectedConfig == XMRStakConfig;
+
+                ToolStripMenuItem Select = new ToolStripMenuItem();
+                Select.Size = new System.Drawing.Size(203, 22);
+                Select.Name = XMRStakConfig + "_select";
+                Select.Text = "Use";
+                Select.Click += (s, e) =>
+                {
+                    SelectedConfig = XMRStakConfig;
+                    foreach (ToolStripMenuItem xmrstak_config_selector in xmrstak_config_selectors)
+                    {
+                        xmrstak_config_selector.Checked = false;
+                    }
+                    XMRStakConfigItem.Checked = true;
+                    UpdateXMRStakProcess(false);
+                };
+
+                ToolStripMenuItem Remove = new ToolStripMenuItem();
+                Remove.Size = new System.Drawing.Size(203, 22);
+                Remove.Name = XMRStakConfig + "_remove";
+                Remove.Text = "Remove";
+                Remove.Click += (s, e) =>
+                {
+                    if (SelectedConfig == XMRStakConfig)
+                    {
+                        SelectedConfig = null;
+                    }
+                    Properties.Settings.Default.XMRStakConfigs.Remove(XMRStakConfig);
+                    Properties.Settings.Default.Save();
+                    GPUConfigsDropdown.DropDownItems.Remove(XMRStakConfigItem);
+                    NoXMRStakConfigs.Visible = Properties.Settings.Default.XMRStakConfigs.Count == 0;
+                };
+
+                XMRStakConfigItem.DropDownItems.AddRange(new ToolStripItem[] {
+                    Select,
+                    Remove
+                });
+
+                DropDownItems.Insert(4 + i, XMRStakConfigItem);
+                i = i + 1;
+            }
+
             SetXMRStakLocation.Checked = Properties.Settings.Default.XMRStakLocation.Length > 0;
 
             NoConfigsIndicator.Visible = Properties.Settings.Default.Configs.Count == 0;
+            NoXMRStakConfigs.Visible = Properties.Settings.Default.XMRStakConfigs.Count == 0;
             foreach (string ConfigLocationUnparsed_foreach in Properties.Settings.Default.Configs)
             {
                 string ConfigLocationUnparsed = ConfigLocationUnparsed_foreach;
@@ -203,7 +259,7 @@ namespace XMR_Stak_GUI
                 ConfigItem.Name = ConfigLocation;
                 ConfigItem.Text = Path.GetFileNameWithoutExtension(ConfigLocation);
                 ConfigItem.Checked = SelectedMiningConfig == ConfigLocation;
-                GPUConfigsDropdown.DropDownItems.Add(ConfigItem);
+                DropDownItems.Add(ConfigItem);
 
                 ToolStripMenuItem CPUType = new ToolStripMenuItem();
                 CPUType.Size = new System.Drawing.Size(203, 22);
@@ -246,7 +302,6 @@ namespace XMR_Stak_GUI
                     Properties.Settings.Default.Configs.Remove(ConfigLocationUnparsed);
                     Properties.Settings.Default.Save();
                     GPUConfigsDropdown.DropDownItems.Remove(ConfigItem);
-                    Console.WriteLine(Properties.Settings.Default.Configs.Count);
                     NoConfigsIndicator.Visible = Properties.Settings.Default.Configs.Count == 0;
                 };
 
@@ -319,6 +374,8 @@ namespace XMR_Stak_GUI
                     Type
                 });
             }
+
+            GPUConfigsDropdown.DropDownItems.AddRange(DropDownItems.ToArray());
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -377,10 +434,10 @@ namespace XMR_Stak_GUI
         }
         private void OpenConfigFile_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Properties.Settings.Default.ConfigFileLocation = OpenConfigFile.FileName;
+            Properties.Settings.Default.XMRStakConfigs.AddRange(OpenConfigFile.FileNames);
             Properties.Settings.Default.Save();
             UpdateConfigDropdown();
-            MessageBox.Show(this, "Set configuration file.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "Added configuration file(s).", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void Wiki_Click(object sender, EventArgs e)

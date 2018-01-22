@@ -25,18 +25,6 @@ namespace XMR_Stak_GUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string XMRStakLocation {
-            get {
-                return ((string)(this["XMRStakLocation"]));
-            }
-            set {
-                this["XMRStakLocation"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
             "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
         public global::System.Collections.Specialized.StringCollection Configs {
@@ -50,13 +38,26 @@ namespace XMR_Stak_GUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ConfigFileLocation {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
+        public global::System.Collections.Specialized.StringCollection XMRStakConfigs {
             get {
-                return ((string)(this["ConfigFileLocation"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["XMRStakConfigs"]));
             }
             set {
-                this["ConfigFileLocation"] = value;
+                this["XMRStakConfigs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string XMRStakLocation {
+            get {
+                return ((string)(this["XMRStakLocation"]));
+            }
+            set {
+                this["XMRStakLocation"] = value;
             }
         }
     }
